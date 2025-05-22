@@ -1,0 +1,23 @@
+.LOGON localhost/dbc,dbc;
+
+.SET WIDTH 65531;
+.SET TITLEDASHES OFF;
+
+.OS mkdir -p ../output/object_extracts/DDL/
+.OS rm -f ../output/object_extracts/DDL/DDL_Databases.sql;
+
+.EXPORT FILE = ../output/object_extracts/DDL/DDL_Databases.sql;
+
+SELECT 
+  'CREATE DATABASE ' || TRIM(DATABASENAME) || ' FROM DBC AS PERM = 100000000;' "--"
+FROM 
+  DBC.DATABASESV
+WHERE 
+  DATABASENAME NOT IN (
+    'DBC', 'SYSADMIN', 'TD_SYSGPL', 'TD_SYSFNLIB', 
+    'TD_SYSLIB', 'SYSSPATIAL', 'TD_STATS', 'All'
+  )
+ORDER BY 1;
+
+.EXPORT RESET;
+.QUIT 0;
